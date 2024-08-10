@@ -1,0 +1,555 @@
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script> -->
+
+<!DOCTYPE html>
+
+<html lang="en" style="font-size: 13px;" data-theme="halloween">
+
+<head>
+
+
+		<meta charset="UTF-8" content="width=device-width, initial-scale=1.0">
+
+		<meta name="viewpoint">
+<style>
+
+
+
+body {
+transition: background-color 0.3s ease, color 0.3s ease;
+background-color: #ffffff;
+color:#000000;
+}
+
+body.dark {
+	background-color: #202020;
+	color: #ffffff;
+}
+
+
+
+.center-button {
+
+	display: flex; 
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+
+.card-hover {
+	transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, opacity 0.3s ease-in-out;
+	position: relative;
+	overflow: hidden;
+
+}
+
+
+/*                              ТУТ АНИМАЦИЯ ПРИ НАВЕДЕНИИ НА КАРТОЧКУ */
+.card-hover:hover {
+	z-index: 10;
+	transform: translateY(-15px) scale(1.1) ;
+	transition-delay: 0.09s;
+	box-shadow: 0 10px 15px rgba(0, 0, 0, 0.7);
+	opacity: 0.95;
+}
+
+.card-hover:not(:hover) {
+	transition: transform 0.4s ease-out;
+}
+
+.description {
+	opacity: 0;
+	visibility: hidden;
+	display: none;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	padding: 1.5rem;
+	text-align: center;
+	transition-delay: 1s;
+	transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.card-hover:hover .description {
+	opacity: 1;
+	visibility: visible;
+	display: block;
+}
+
+.card-title {
+	transition: opacity 0.3s ease-in-out;
+}
+
+/*  НУЖЕН ЧТОБЫ ОПИСАНИЕ ПОЯВЛЯЛОСЬ И ИСЧЕЗАЛО */
+/* 
+.card-hover:hover .card-title {
+	opacity: 0;
+	transition: none;
+}
+ */
+
+
+.dark-square {
+    position:fixed;
+	z-index: 5;
+	left: 0;
+	top: 0;
+    /* top: 45%;
+	left: 45%;
+	transform: translate(-50%, -50%);   */
+    /* margin: 3rem; */
+	padding: auto;
+    background-color: #333;
+    /* width: 90vw; 
+    height: 90vh;  */
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.8);
+    /* border-radius: 20px 40px 20px 20px; */
+    display: none;
+	box-sizing: border-box;
+    flex-direction: column;
+    /* box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);  */
+}
+
+.text-area {
+    width: 90%; /* Занимает 90% ширины квадрата */
+    height: 90%; /* Занимает 90% высоты квадрата */
+    font-size: 16px;
+    border-radius: 0.5rem; /* Закругленные углы у поля ввода */
+    border: none;
+    outline: none;
+    padding: 10px;
+    resize: none; /* Запрещает изменение размера поля вручную */
+    box-sizing: border-box; /* Включает padding в размеры поля */
+    overflow-y: auto; /* Вертикальная прокрутка, если нужно */
+    text-align: left; /* Текст выравнивается по левому краю */
+    vertical-align: top; /* Выравнивание текста по верхнему краю (необходимо для textarea) */
+}
+
+.file-name {
+  color: #fff;
+  font-size: 20px;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  margin-left: 2rem; 
+
+}
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0px;
+}
+
+.action-button {
+  margin: 0;
+  color:#fff;
+  background-color: #555;
+  border: none;
+  cursor: pointer;
+}
+
+
+.swap-icon {
+	position: fixed;
+	top: 2rem;
+	right: 2rem;
+	/* z-index: 10; */
+
+}
+
+.hide-me {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.1s ease, visibility 0.1s ease; /* Плавное изменение прозрачности и видимости */
+        }
+
+.hidden {
+	opacity: 0; /* Прозрачность */
+	visibility: hidden; /* Скрытие элемента, сохраняя место на странице */
+}
+
+.no-select {
+			
+            user-select: none; /* Отключает выделение текста */
+ }
+
+.my-border {
+	border: 0.1rem solid #666;
+	border-radius: 2rem;
+}
+
+
+</style> 
+
+
+
+
+</head>
+
+
+<!-- background-size:cover; background-position: center; -->
+<body class="font-mono no-select" style="height: 100vh; width: 100vw;"  >
+
+
+<!--                                      ВЫБОР ТЕМЫ -->
+	<div class="dropdown mb-72 hide-me" style="position: fixed; margin: 1rem;">
+		<div tabindex="0" role="button" class="btn m-1">
+		  ЦВЕТОВАЯ ТЕМА
+		  <svg
+			width="12px"
+			height="12px"
+			class="inline-block h-2 w-2 fill-current opacity-60"
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 2048 2048">
+			<path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
+		  </svg>
+		</div>
+		<ul tabindex="0" class="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl">
+		  <li>
+			<input
+			  type="radio"
+			  name="theme-dropdown"
+			  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+			  aria-label="Default"
+			  value="default" />
+		  </li>
+	
+		  <li>
+			<input
+			  type="radio"
+			  name="theme-dropdown"
+			  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+			  aria-label="bumblebee"
+			  value="bumblebee" />
+		  </li>
+		  <li>
+			<input
+			  type="radio"
+			  name="theme-dropdown"
+			  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+			  aria-label="emerald"
+			  value="emerald" />
+		  </li>
+
+		  <li>
+			<input
+			  type="radio"
+			  name="theme-dropdown"
+			  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+			  aria-label="garden"
+			  value="garden" />
+		  </li>
+
+	
+		  <li>
+			<input
+			  type="radio"
+			  name="theme-dropdown"
+			  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+			  aria-label="pastel"
+			  value="pastel" />
+		  </li>
+	
+		  <li>
+			<input
+			  type="radio"
+			  name="theme-dropdown"
+			  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+			  aria-label="wireframe"
+			  value="wireframe" />
+		  </li>
+		  <li>
+			<input
+			  type="radio"
+			  name="theme-dropdown"
+			  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+			  aria-label="luxury"
+			  value="luxury" />
+		  </li>
+		  <li>
+			<input
+			  type="radio"
+			  name="theme-dropdown"
+			  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+			  aria-label="dracula"
+			  value="dracula" />
+		  </li>
+		  <li>
+			<input
+			  type="radio"
+			  name="theme-dropdown"
+			  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+			  aria-label="cmyk"
+			  value="cmyk" />
+		  </li>
+		  <li>
+		
+
+		</ul>
+	  </div>
+
+<!--                                                ДНЕВНАЯ/НОЧНАЯ ТЕМА -->
+	<label class="swap swap-rotate hide-me" style="position: fixed; top: 2em; right: 2rem;">
+		<!-- this hidden checkbox controls the state -->
+		<input type="checkbox" id="theme-toggle"/>
+		<!-- sun icon -->
+		<svg
+		  class="swap-on h-10 w-10 fill-current"
+		  xmlns="http://www.w3.org/2000/svg"
+		  viewBox="0 0 24 24">
+		  <path
+			d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" />
+		</svg>
+	  
+		<!-- moon icon -->
+		<svg
+		  class="swap-off h-10 w-10 fill-current"
+		  style="color: #000000;"
+		  xmlns="http://www.w3.org/2000/svg"
+		  viewBox="0 0 24 24">
+		  <path
+			d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" />
+		</svg>
+	  </label>
+
+
+<!--                                                              ЛОГОТИП    -->
+<div style="display: flex; justify-content: center; align-items: center; margin-bottom: 5rem; padding-top: 2.5rem;" class="hide-me">
+        <img src="data/fanfic.png" alt="Logo" style="height: 10rem; filter: brightness(100%); margin-right: 3rem;">      
+</div>
+
+
+<!--                                                     КЛАСС ДЛЯ ЦЕНТРОВАНИЯ ЭЛЕМЕНТОВ   DEEP[0] -->
+<div class="center-button">
+
+
+	<!--                                                     КНОПКА НАЧАТЬ ГЕНЕРАЦИЮ    DEEP[1]-->
+	<button class="btn  btn-primary w-[28rem] h-[6rem]" style="font-size: 3rem; margin-bottom: 6rem;">начать</button> 
+
+<!--                                                   КОНТЕЙНЕР ДЛЯ ДВУХ КНОПОК НИЖЕ   DEEP[1]-->
+<div class="flex" style="margin-bottom:  1rem; justify-content: center; align-items: center;" >
+
+	<!--                                            КНОПКА ВЫБОРА ФАЙЛА И ОТКРЫТИЯ РЕДАКТОРА    DEEP[2]-->
+	<input type="file" id="fileInput" class="file-input file-input-bordered file-input-primary w-[40rem]" style=" margin-right: 0.5rem; color: white; background-color: #202020;"  />
+	<button id="open-editor" onclick="hideElements()" class="btn btn-primary flex items-center justify-center"> <img src="data/25363.png" alt="Icon" class="w-10 h-10" style="margin-left: 0.5rem;"> </button>
+</div>
+
+
+	
+
+
+
+
+<!--                                            КОНТЕЙНЕР ДЛЯ КАРТОЧЕК СТИЛЕЙ   DEEP[1]     -->
+	<div class="flex glass gap-4 rounded-box my-border" style="padding: 2rem; margin-top: 0rem;">
+
+			<!--                                                      КАРТОЧКА АНИМЕ     DEEP[2] -->
+		  <div class="card card-bordered w-[16rem] h-[18rem] shadow-2xl card-hover " style="background-color: #ffffff; color: #000000;">
+			<figure>
+			  <img
+				src="icons/anime_icon.png"
+				alt="Shoes" />
+			</figure>
+			<div class="card-body text-center items-center" >
+			  <h2 class="card-title" style="color: #000000; font-size: 2rem;">Аниме</h2>
+		
+			  <div class="card-actions justify-end ">
+		
+			  </div>
+			  <div class="description"></div>
+			</div>
+		  </div>
+
+
+
+		
+	<!--                                                     КАРТОЧКА ОБЫЧНЫЙ     DEEP[2]  -->
+		  <div class="card card-bordered w-[16rem] h-[18rem] shadow-2xl card-hover " style="background-color: #ffffff; color: #000000;">
+			<figure>
+			  <img
+				src="icons/personal-icon.png"
+				alt="Shoes" />
+			</figure>
+			<div class="card-body text-center items-center">
+			  <h2 class="card-title" style="color: #000000; font-size: 2rem;">Обычный</h2>
+		
+
+			  <div class="card-actions justify-end">
+		
+			  </div>
+			  <div class="description"></div>
+			</div>
+		  </div>
+
+
+
+			
+<!--                                                         КАРТОЧКА ДЕТАЛЬНОЕ     DEEP[2] -->
+		  <div class="card card-bordered w-[16rem] h-[18rem] shadow-2xl card-hover" style="background-color: #ffffff; color: #000000;">
+			<figure>
+			  <img
+				src="icons/detail_icon.png"
+				alt="Shoes" />
+			</figure>
+			<div class="card-body text-center items-center">
+			  <h2 class="card-title" style="color: #000000; font-size: 2rem;">Детальное</h2>
+			
+			  <div class="card-actions justify-end">
+		
+			  </div>
+			  <div class="description"></div>
+			</div>
+		  </div>
+
+
+
+	<!--                                                      КАРТОЧКА КАНДИНСКИЙ     DEEP[2]   -->
+		  <div class="card card-bordered w-[16rem] h-[18rem] shadow-2xl card-hover " style="background-color: #ffffff; color: #000000;">
+			<figure>
+			  <img
+				src="icons/kandinsky-icon.png"
+				alt="Shoes" />
+			</figure>
+			<div class="card-body text-center items-center">
+			  <h2 class="card-title" style="color: #000000; font-size: 2rem;">Кандинский</h2>
+		
+			  <div class="card-actions justify-end">
+	
+			  </div>
+			  <div class="description"></div>
+			</div>
+		  </div>
+		
+
+		</div>
+
+</div>
+
+
+<!--                                                      ОКНО EDITOR                                         -->
+<div id="editor" class="dark-square">
+    
+
+
+
+	<!--                                                  КНОПКА ЗАКРЫТЬ EDITOR        -->
+    <div class="header">
+      <div class="file-name"><p id="fileNameDisplay"></p></div>
+      <button id="close-editor" onclick="showElements()" class="btn btn-circle btn-outline btn-secondary showButton"  style="margin-top: 1rem; margin-right: 2rem; margin-bottom: 0; margin-left: 0;">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6 "
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    
+
+
+      
+    </div>
+    <!--                                                 ПОЛЕ ВВОДА ТЕКСТА -->
+     <textarea id="fileContent" class="textarea textarea-info text-area" style="margin-top: rem; margin-left: 1rem;" placeholder="Введите текст"></textarea>
+</div>
+
+
+<script>
+
+        function hideElements() {
+            var elements = document.querySelectorAll('.hide-me');
+            elements.forEach(function(element) {
+                element.classList.add('hidden');
+            });
+        }
+
+        function showElements() {
+            var elements = document.querySelectorAll('.hide-me');
+            elements.forEach(function(element) {
+                element.classList.remove('hidden');
+            });
+        }
+
+//
+
+ 
+
+// theme
+
+const toggleSwitch = document.getElementById('theme-toggle');
+const themeSwitcher = document.querySelector('.swap-icon');
+const currentTheme = localStorage.getItem('theme');
+
+
+
+  if (currentTheme) {
+    document.body.classList.add(currentTheme);
+
+    if (currentTheme === 'dark') {
+      toggleSwitch.checked = true;
+    }
+  }
+
+  toggleSwitch.addEventListener('change', function() {
+    if (this.checked) {
+      document.body.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.body.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  });
+
+// theme
+
+
+
+
+
+document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('fileContent').value = e.target.result;
+                };
+                reader.readAsText(file);
+            }
+
+			const fileName = file.name;
+			document.getElementById('fileNameDisplay').textContent = fileName;
+        });
+
+
+	document.getElementById('open-editor').addEventListener('click', function() {
+    document.getElementById('editor').style.display = 'flex'; // Показываем редактор
+    document.getElementById('close-editor').style.display = 'flex'; // Показываем кнопку закрытия
+});
+
+document.getElementById('close-editor').addEventListener('click', function() {
+    document.getElementById('editor').style.display = 'none'; // Скрываем редактор
+    document.getElementById('close-editor').style.display = 'none'; // Скрываем кнопку закрытия
+});
+
+
+
+</script>
+
+
+
+</body>
+</html>
